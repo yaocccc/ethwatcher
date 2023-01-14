@@ -1,6 +1,6 @@
-const tryTimes = async <V>(fnGetter: () => Promise<V>, times: number, retryDelay: number): Promise<V> => {
+const tryTimes = async <V>(tag: string, fnGetter: () => Promise<V>, times: number, retryDelay: number): Promise<V> => {
     while (times-- > 0) {
-        console.log(times);
+        console.log(tag, times);
         try {
             return await fnGetter();
         } catch (error) {

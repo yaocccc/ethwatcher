@@ -21,7 +21,7 @@ const sendMsgToDingDing = async (msg: string, hash: string) => {
 
     try {
         if (Date.now() - startat > 1000 * 60) { // 启动时的1分钟不播报
-            const res = await tryTimes(() => axios.post(webhook, body), 3, 20 * 1000);
+            const res = await tryTimes("send_" + hash, () => axios.post(webhook, body), 3, 20 * 1000);
             console.log(res);
         } 
         sended.add(hash);
