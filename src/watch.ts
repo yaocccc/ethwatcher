@@ -61,13 +61,19 @@ const parseTx = async (tx: any): Promise<string[]> => {
 const run = async () => {
     try {
         const blockNumber = await tryTimes(() => scanProvider.getBlockNumber(), 3, 1000);
+        const history: ethers.providers.TransactionResponse[] = [];
         console.log(blockNumber)
-        const history = await tryTimes(
-            () => scanProvider.getHistory("0x3d74b96f74785d40ce03b99fa578406da5d4c149", blockNumber - 100),
-            3,
-            1000
-        );
-        console.log(history.length);
+        const addresses = ["0x3d74b96f74785d40ce03b99fa578406da5d4c149", "0xd02180861a831e675e1c48087f3037fca65109ab", "0x3d74b96f74785d40ce03b99fa578406da5d4c149"];
+        await Promise.all(addresses.map(address => {
+            return tryTimes(
+                () => scanProvider.getHistory(address, blockNumber - 100),
+                3,
+                1000
+            ).then(res => history.push(...res));
+        }));
+        
+        console.log("history.length: ", history.length);
+
         for (const tx of history) {
             const parsedTx = await parseTx(tx);
             if (parsedTx[0] != "") 
